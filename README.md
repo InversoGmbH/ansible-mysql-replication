@@ -67,6 +67,7 @@ By using group_vars and host_vars this playbook can be reduced to 1 play with tw
         - role: inverso.mysql-replication
 
     The group_vars should contain:
+    mysql_replication_role: 'master'
     mysql_replication_user:
       name: 'replicator'
       password: 'repl1234'
