@@ -1,0 +1,38 @@
+---
+# tasks file for inverso.mysql-replication
+#
+
+- name: Check master replication status
+  mysql_replication: mode=getmaster
+  delegate_to: "{{ mysql_replication_master }}"
+  register: _status_master
+
+- name: Show master replication status
+  debug:
+    var: _status_master
+    verbosity: 1
+
+- name: Check slave replication status
+  mysql_replication: mode=getslave
+  register: _status_slave
+
+- name: Show slave replication status
+  debug: 
+    var: _status_slave
+    verbosity: 1
+
+- name: Configure replication partner
+  mysql_replication:
+    mode: changemaster
+    master_host: "{{ mysql_replication_master }}"
+    master_user: "{{ mysql_replication_user.name }}"
+    master_password: "{{ mysql_replication_user.password }}"
+    master_log_file: "{{ _status_master.File }}"
+    master_log_pos: "{{ _status_master.Position }}"
+  when:
+    - _status_slave.Is_Slave is defined
+    - not _status_slave.Is_Slave
+  register: _state_replication
+
+- name: Start replication
+  mysql_replication: mode=startslave

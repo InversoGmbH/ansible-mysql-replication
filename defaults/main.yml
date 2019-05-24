@@ -1,0 +1,11 @@
+---
+# defaults file for inverso.mysql-replication
+#
+
+# this has to be created by geerlingguy.mysql
+# this role has to know the existing mysql_replication_user
+mysql_replication_user:
+  name: 'replicator'
+  password: 'changeme'
+
+mysql_replication_master: 'master1.domain'
